@@ -9,4 +9,4 @@ spring:
     config:
       server:
         git:
-          uri: file:///D:/JobFlow/jobflow-config
+          uri: file:///D:/JobFlow-Backend/jobflow-config
