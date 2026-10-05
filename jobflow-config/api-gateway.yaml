@@ -18,6 +18,20 @@ spring:
           predicates:
             - Path=/api/jobs/**
 
+        - id: resume-service
+          uri: lb://RESUME-SERVICE
+          predicates:
+            - Path=/api/resumes/**
+
+        - id: job-service
+          uri: lb://JOB-SERVICE
+          predicates:
+            - Path=/api/jobs/**
+
+        - id: applicationTracking-service
+          uri: lb://APPLICATIONTRACKING-SERVICE
+          predicates:
+            - Path=/api/applications/**
 eureka:
   client:
     service-url:

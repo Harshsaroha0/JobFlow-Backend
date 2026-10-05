@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: applicationTracking-service
+
+  config:
+    import: "configserver:http://localhost:8888"
