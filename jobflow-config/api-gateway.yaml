@@ -32,6 +32,11 @@ spring:
           uri: lb://APPLICATIONTRACKING-SERVICE
           predicates:
             - Path=/api/applications/**
+
+        - id: skill-service
+          uri: lb://SKILL-SERVICE
+          predicates:
+            - Path=/api/skills/**
 eureka:
   client:
     service-url:
