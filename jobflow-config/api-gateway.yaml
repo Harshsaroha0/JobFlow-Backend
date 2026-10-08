@@ -37,6 +37,11 @@ spring:
           uri: lb://SKILL-SERVICE
           predicates:
             - Path=/api/skills/**
+
+        - id: user-skill-service
+          uri: lb://SKILL-SERVICE
+          predicates:
+            - Path=/api/user-skills/**
 eureka:
   client:
     service-url:
