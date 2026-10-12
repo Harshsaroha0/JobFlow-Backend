@@ -1,3 +1,4 @@
+
 server:
   port: 8080
 
@@ -23,12 +24,7 @@ spring:
           predicates:
             - Path=/api/resumes/**
 
-        - id: job-service
-          uri: lb://JOB-SERVICE
-          predicates:
-            - Path=/api/jobs/**
-
-        - id: applicationTracking-service
+        - id: application-tracking-service
           uri: lb://APPLICATIONTRACKING-SERVICE
           predicates:
             - Path=/api/applications/**
@@ -47,6 +43,12 @@ spring:
           uri: lb://NOTIFICATION-SERVICE
           predicates:
             - Path=/api/notifications/**
+
+        - id: ai-service
+          uri: lb://AI-SERVICE
+          predicates:
+            - Path=/api/ai/**
+
 eureka:
   client:
     service-url:
