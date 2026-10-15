@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — JobFlow</title><link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="../index.html">Job<span>Flow</span></a>
+    <nav class="side-nav">
+      <a class="active" href="dashboard.html">⌂ <span>Dashboard</span></a>
+      <a href="jobs.html">▤ <span>Jobs</span></a>
+      <a href="resume.html">▱ <span>Resume</span></a>
+      <a href="ai-analysis.html">✦ <span>AI Analysis</span></a>
+      <a href="profile.html">○ <span>Profile</span></a>
+    </nav>
+    <button id="logoutBtn" class="logout">↪ <span>Logout</span></button>
+  </aside>
+  <main class="app-main">
+    <header class="app-header"><button class="menu-btn" id="sidebarBtn">☰</button><div><p class="eyebrow">OVERVIEW</p><h1>Dashboard</h1></div><a class="avatar" href="profile.html">HS</a></header>
+    <section class="welcome"><div><h2>Good morning.</h2><p>Here's what's happening with your job search.</p></div><a class="btn btn-primary" href="jobs.html">+ Add job</a></section>
+    <section class="dashboard-grid">
+      <div class="metric card"><span>Applications</span><strong>24</strong><small>+4 this month</small></div>
+      <div class="metric card"><span>Interviews</span><strong>5</strong><small>2 upcoming</small></div>
+      <div class="metric card"><span>Saved jobs</span><strong>12</strong><small>3 new this week</small></div>
+      <div class="metric card"><span>Offers</span><strong>1</strong><small>Current total</small></div>
+    </section>
+    <section class="content-card card">
+      <div class="card-header"><div><h2>Recent applications</h2><p>Your latest job activity.</p></div><a href="jobs.html">View all →</a></div>
+      <div class="table-wrap"><table><thead><tr><th>Position</th><th>Company</th><th>Location</th><th>Status</th><th>Date</th></tr></thead><tbody>
+        <tr><td>Java Backend Developer</td><td>TechNova</td><td>Noida</td><td><span class="status applied">APPLIED</span></td><td>Sep 18</td></tr>
+        <tr><td>Spring Boot Engineer</td><td>CloudCore</td><td>Gurgaon</td><td><span class="status interview">INTERVIEW</span></td><td>Sep 16</td></tr>
+        <tr><td>Backend Developer</td><td>FinStack</td><td>Delhi</td><td><span class="status saved">SAVED</span></td><td>Sep 15</td></tr>
+        <tr><td>Java Developer</td><td>DataWorks</td><td>Noida</td><td><span class="status rejected">REJECTED</span></td><td>Sep 11</td></tr>
+      </tbody></table></div>
+    </section>
+  </main>
+</div>
+<script src="../js/app.js"></script>
+</body>
+</html>
