@@ -1,0 +1,26 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: jobflow-monolith
+  datasource:
+    url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQLDATABASE:jobflow}
+    username: ${MYSQLUSER:root}
+    password: ${MYSQLPASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+file:
+  storage:
+    location: ${FILE_STORAGE_LOCATION:./storage/resumes}
+
+jobflow:
+  frontend-origin: ${FRONTEND_ORIGIN:https://jobflow-frontend-production-cacf.up.railway.app}
