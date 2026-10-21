@@ -1,0 +1,37 @@
+# Java / Maven
+**/target/
+*.class
+*.jar
+*.war
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+application-local.yaml
+application-local.yml
+secrets/
+*.pem
+*.key
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+.temp/
+
+# Local uploaded resume files (keep directory placeholders if needed)
+storage/resumes/*
+!storage/resumes/.gitkeep
+
+# Node frontend dependencies/build artifacts
+node_modules/
+dist/
+coverage/
