@@ -1,71 +1,76 @@
+# JobFlow — Job Application Management Platform
 
-# JobFlow — AI-Assisted Job Application Management
+JobFlow is a full-stack portfolio project for organizing job-search activity. It combines a Java/Spring Boot backend, MySQL persistence, and a plain HTML/CSS/JavaScript frontend.
 
-JobFlow is a full-stack job application management project built with Java, Spring Boot microservices, MySQL, and a responsive HTML/CSS/JavaScript frontend. It brings job listings, application tracking, resume management, skills, notifications, and local resume/job-description analysis into one application.
+**Live demo**
+- Frontend: https://jobflow-frontend-production-cacf.up.railway.app
+- Backend health: https://jobflow-monolith-production.up.railway.app/actuator/health
+- Repository: https://github.com/Harshsaroha0/JobFlow-Backend
 
-> **Project status:** Backend and frontend are combined in this repository. Verify each service and its routes locally before treating every feature as production-ready.
+> **Deployment note:** The original microservices implementation is preserved in this repository. For the current low-cost Railway deployment, a separate consolidated Spring Boot application reuses the existing service source packages. The deployment is a portfolio/demo environment; validate each user-facing workflow before relying on it as a production service.
 
 ## Features
 
-- **Job management:** Backend service for job-related operations.
-- **Application tracking:** Organize and track job application workflows.
-- **Resume management:** Dedicated resume service.
-- **Skills management:** Skills and user-skill routes.
-- **Notifications:** Dedicated notification service.
-- **Resume analysis:** Extract skills and resume sections from supplied resume text.
-- **Job description analysis:** Detect known skills and extract recognized responsibilities and qualification sections.
-- **Microservices architecture:** Separate Spring Boot services, service discovery, centralized configuration, and API Gateway.
-- **Web frontend:** HTML, CSS, and JavaScript.
-- **Manual API testing:** Test endpoints with Postman.
+- Job management and job search workflows
+- Job application tracking
+- Resume management and file upload/storage
+- Skills and user-skill management
+- Notifications
+- Resume text analysis (skill and section extraction)
+- Job-description text analysis (recognized skills, responsibilities, and qualifications)
+- Browser-based frontend using HTML, CSS, and JavaScript
 
-## Technology Stack
+The AI-related analysis currently uses local Java text-processing/rule-based extraction; it is not a generative LLM integration.
 
-| Area | Technologies |
-|---|---|
-| Backend | Java 21, Spring Boot 3.5.x |
-| Microservices | Spring Cloud, Spring Cloud Gateway |
-| Service discovery | Netflix Eureka |
-| Configuration | Spring Cloud Config Server |
-| Database | MySQL |
-| Persistence | Spring Data JPA where configured |
-| Frontend | HTML, CSS, JavaScript |
-| AI-related analysis | Local Java-based text and skill extraction |
-| Build | Maven |
-| API testing | Postman |
-| Version control | Git and GitHub |
+## Technology stack
 
-## Architecture
+- **Language/runtime:** Java 21
+- **Backend:** Spring Boot 3.5.4, Spring Web, Spring Data JPA, Bean Validation
+- **Database:** MySQL
+- **Frontend:** HTML, CSS, JavaScript
+- **Build:** Maven
+- **Deployment:** Railway, Docker
+- **Original distributed architecture:** Spring Cloud Config, Eureka service discovery, Spring Cloud Gateway
 
-The frontend sends API requests through the API Gateway. The Gateway uses Eureka service discovery to route requests to the appropriate registered backend service. Services obtain their configuration from the Config Server.
+## Deployment architecture
+
+### Current Railway demo
 
 ```text
-                  Web Frontend
-              HTML / CSS / JavaScript
-                         |
-                         v
-                  API Gateway
-                    :8080
-                         |
-             +-----------+-----------+
-             |           |           |
-             v           v           v
-        User Service  Job Service  Resume Service
-             |
-      +------+-------------------------------+
-      |              |             |         |
-      v              v             v         v
- Application      Skill       Notification  AI
- Tracking         Service       Service    Service
- Service
+Browser
+   |
+   v
+HTML / CSS / JavaScript frontend (Railway)
+   |
+   | HTTPS API requests
+   v
+Consolidated Spring Boot backend (Railway, port 8080)
+   |
+   v
+MySQL database (Railway)
 
-       Eureka Discovery: :8761
-       Config Server:    :8888
-       Database:         MySQL
+Persistent volume -> uploaded resume files
 ```
 
-*The diagram is a logical overview. Actual service communication and database ownership depend on each service's configuration.*
+The consolidated application compiles the Java source packages from the existing user, job, resume, application-tracking, skill, notification, and AI service folders into one Spring Boot process. This reduces the number of deployed services for the demo while keeping the original service directories available for local microservices development.
 
-## Repository Structure
+The original architecture remains in the repository:
+
+- `config-server/` — centralized configuration server
+- `eureka-server/` — service discovery
+- `api-gateway/` — gateway routing
+- `user-service/` — user operations
+- `job-service/` — job operations
+- `resume-service/` — resume operations and file handling
+- `applicationTracking-service/` — application tracking
+- `skill-service/` — skills and user-skill operations
+- `notification-service/` — notification operations
+- `ai-service/` — resume and job-description text analysis
+- `jobflow-config/` — configuration used by the original microservices
+- `frontend/` — browser UI
+- `jobflow-monolith/` — consolidated deployment entry point and build configuration
+
+## Repository structure
 
 ```text
 JobFlow-Backend/
@@ -81,285 +86,87 @@ JobFlow-Backend/
 │   └── index.html
 ├── job-service/
 ├── jobflow-config/
+├── jobflow-monolith/
+│   ├── pom.xml
+│   └── src/main/
 ├── notification-service/
 ├── resume-service/
 ├── skill-service/
-├── storage/
 ├── user-service/
+├── Dockerfile
+├── .gitignore
 └── README.md
 ```
 
-### Service responsibilities
+## Run the consolidated backend locally
 
-| Component | Responsibility |
-|---|---|
-| `config-server` | Centralized application configuration |
-| `eureka-server` | Service registration and discovery |
-| `api-gateway` | Routes client requests to backend services |
-| `user-service` | User-related operations |
-| `job-service` | Job-related operations |
-| `resume-service` | Resume-related operations |
-| `applicationTracking-service` | Job application tracking |
-| `skill-service` | Skills and user-skill operations |
-| `notification-service` | Notification-related operations |
-| `ai-service` | Resume and job description text analysis |
-| `frontend` | Browser-based user interface |
-| `storage` | Storage-related project resources; inspect its implementation for exact behavior |
+**Prerequisites:** JDK 21, Maven, and a running MySQL instance.
 
-## Prerequisites
-
-Install and configure:
-
-- Java Development Kit (JDK) 21
-- Maven, or use the Maven Wrapper if available
-- MySQL Server
-- Git
-- IntelliJ IDEA or another Java IDE
-- Postman for API testing
-- A modern browser
-
-## Getting Started
-
-### 1. Clone the repository
+1. Clone the repository and enter its root directory.
+2. Create a database named `jobflow`.
+3. Set database environment variables if your local MySQL credentials differ from the defaults:
+   - `MYSQLHOST` (default `localhost`)
+   - `MYSQLPORT` (default `3306`)
+   - `MYSQLDATABASE` (default `jobflow`)
+   - `MYSQLUSER` (default `root`)
+   - `MYSQLPASSWORD` (default empty)
+4. Build and run:
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd JobFlow-Backend
+mvn -f jobflow-monolith/pom.xml clean package
+java -jar jobflow-monolith/target/jobflow-monolith-1.0.0.jar
 ```
 
-Replace the placeholder with the actual GitHub repository URL.
+The backend listens on port `8080` by default. The `PORT` environment variable can override this.
 
-### 2. Configure MySQL
+Optional configuration:
+- `FRONTEND_ORIGIN` — allowed browser origin for API CORS.
+- `FILE_STORAGE_LOCATION` — directory for uploaded resumes (default `/data/resumes` in the deployment configuration).
 
-Start MySQL and create the databases required by the services. The shared project configuration has used the `jobflow` database; inspect the service configuration files to confirm whether every service uses it or has a separate schema.
+## Run the frontend locally
 
-Example:
+Serve the `frontend/` directory with a local static web server and open its index page. The API base URL is configured in `frontend/js/config.js`. For local development, point `API_BASE_URL` to `http://localhost:8080`; the deployment branch uses the Railway backend URL.
 
-```sql
-CREATE DATABASE jobflow;
-```
+## Health check and API routes
 
-Configure the database URL, username, and password in the relevant configuration files or environment variables. Use your own local credentials and do not commit passwords or secrets.
+- Health check: [`/actuator/health`](https://jobflow-monolith-production.up.railway.app/actuator/health)
+- Job route prefix: `/api/jobs/**`
+- User route prefix: `/api/users/**`
+- Resume route prefix: `/api/resumes/**`
+- Application tracking prefix: `/api/applications/**`
+- Skills prefix: `/api/skills/**` and `/api/user-skills/**`
+- Notifications prefix: `/api/notifications/**`
+- AI analysis prefix: `/api/ai/**`
 
-### 3. Start the backend services
+These are route prefixes, not an exhaustive endpoint contract. Check the relevant controllers for supported methods, payloads, authentication requirements, and response formats. Use Postman or browser developer tools to verify individual flows.
 
-Start services in this order:
+## Original microservices setup
 
-1. MySQL
-2. Config Server
-3. Eureka Server
-4. Business services, including User, Job, Resume, Application Tracking, Skill, Notification, and AI
-5. API Gateway
+Each original backend component has its own Maven project. For local microservices development, start MySQL, then the Config Server and Eureka Server, then the business services, and finally the API Gateway. Review `jobflow-config/` and each service's `application.yaml` before starting: replace machine-specific paths and local-only configuration with values suitable for your environment. The consolidated deployment does not require separate Config Server or Eureka processes to serve its API.
 
-The Config Server is configured to use the local configuration repository at:
+## Keep the repository clean and secure
 
-```text
-file:///D:/JobFlow/jobflow-config
-```
+- Never commit database passwords, access tokens, API keys, or `.env` files.
+- Keep generated Maven output (`target/`), IDE metadata, logs, and local resume uploads out of Git.
+- Use Railway environment variables for deployment-specific values.
+- Rotate any credentials that have previously been committed to version control.
+- Review authentication, authorization, CORS, file validation, and database configuration before using this as a production service.
 
-If you clone the project to a different location, update the configuration repository path accordingly.
+## Current status and next steps
 
-The expected local ports confirmed in the project configuration include:
-
-| Component | Port |
-|---|---:|
-| Config Server | 8888 |
-| Eureka Server | 8761 |
-| API Gateway | 8080 |
-| AI Service | 8087 |
-
-Check each service's configuration for its actual port and startup requirements.
-
-### 4. Verify service discovery
-
-Open the Eureka dashboard:
-
-```text
-http://localhost:8761
-```
-
-Confirm that the required services are registered before testing requests through the Gateway.
-
-### 5. Start the frontend
-
-The frontend is located in the `frontend/` directory.
-
-Open `frontend/index.html` in a browser, or serve the folder using a local static web server. If the browser blocks requests when opening the file directly, use a local development server.
-
-The frontend configuration is located in:
-
-```text
-frontend/js/config.js
-```
-
-Its current API base URL is:
-
-```javascript
-API_BASE_URL: "http://localhost:8080"
-```
-
-Keep the frontend pointed at the API Gateway rather than calling individual microservices directly.
-
-## API Routes
-
-The following Gateway route prefixes are configured in `jobflow-config/api-gateway.yaml`.
-
-| Service | Gateway route prefix |
-|---|---|
-| User Service | `/api/users/**` |
-| Job Service | `/api/jobs/**` |
-| Resume Service | `/api/resumes/**` |
-| Application Tracking | `/api/applications/**` |
-| Skill Service | `/api/skills/**` |
-| User Skills | `/api/user-skills/**` |
-| Notification Service | `/api/notifications/**` |
-| AI Service | `/api/ai/**` |
-
-These are route prefixes, not a complete list of individual endpoints. Check each controller for supported HTTP methods, request bodies, validation rules, and response formats.
-
-### Resume analysis
-
-**Direct service URL**
-
-```http
-POST http://localhost:8087/api/ai/resume/analyze
-```
-
-**Through the API Gateway**
-
-```http
-POST http://localhost:8080/api/ai/resume/analyze
-```
-
-Example JSON request:
-
-```json
-{
-  "resumeText": "Java developer skilled in Java, Spring Boot, REST APIs and MySQL. Built a Banking Management System using Java and JDBC. B.Tech in Computer Science."
-}
-```
-
-The response contains:
-
-- `skills`
-- `experience`
-- `education`
-- `projects`
-
-### Job description analysis
-
-**Direct service URL**
-
-```http
-POST http://localhost:8087/api/ai/job-description/analyze
-```
-
-**Through the API Gateway**
-
-```http
-POST http://localhost:8080/api/ai/job-description/analyze
-```
-
-Example JSON request:
-
-```json
-{
-  "jobDescription": "Java Backend Engineer\n\nResponsibilities:\nDevelop REST APIs\nMaintain backend services\n\nQualifications:\nB.Tech in Computer Science\nKnowledge of Java and SQL"
-}
-```
-
-The response contains:
-
-- `requiredSkills`
-- `responsibilities`
-- `qualifications`
-
-Use Postman with `Content-Type: application/json` to test these endpoints.
-
-## About the AI Service
-
-The current AI service performs **local, rule-based text analysis in Java**. It does not require an OpenAI API key or an external AI provider.
-
-- Skills are detected by matching text against a predefined technology list.
-- Resume sections are extracted using recognized headings.
-- Job-description responsibilities and qualifications are extracted when supported headings are present.
-
-This is a lightweight text-processing implementation, not a generative large language model. Results depend on the wording, formatting, and supported skills/headings. Validate extracted information before relying on it.
-
-## Manual Testing Checklist
-
-- [ ] MySQL is running and the required databases exist.
-- [ ] Config Server starts successfully.
-- [ ] Eureka dashboard opens and required services register.
-- [ ] Each backend service starts without configuration or database errors.
-- [ ] Gateway starts and loads its route configuration.
-- [ ] Resume analysis works directly on port `8087`.
-- [ ] Job description analysis works directly on port `8087`.
-- [ ] AI endpoints work through Gateway port `8080`.
-- [ ] User, job, resume, application, skill, and notification endpoints are checked against their controllers.
-- [ ] Frontend loads and its API requests use the Gateway.
-- [ ] No secrets or local-only credentials are committed.
-
-## Troubleshooting
-
-**Service cannot connect to Config Server**
-
-- Confirm Config Server is running on port `8888`.
-- Check the `spring.config.import` value.
-- Verify the local configuration repository path.
-
-**Service is missing from Eureka**
-
-- Confirm Eureka is running on port `8761`.
-- Check the service's Eureka client configuration and startup logs.
-
-**Gateway returns 503 or cannot find a service**
-
-- Check that the target service is registered in Eureka.
-- Confirm the service ID in the Gateway route matches the registered service name.
-- Check the service logs and route configuration.
-
-**AI endpoint works directly but not through Gateway**
-
-- Confirm the `AI-SERVICE` registration in Eureka.
-- Confirm the `/api/ai/**` route exists in the active Gateway configuration.
-- Restart or refresh the Gateway if configuration is not being reloaded.
-
-**Frontend cannot call the backend**
-
-- Confirm the API base URL in `frontend/js/config.js`.
-- Check that the Gateway is running.
-- Inspect the browser console and network tab for CORS, connection, or HTTP errors.
-
-## Security and Configuration
-
-- Do not commit real database passwords, API keys, access tokens, or production secrets.
-- Keep local configuration and environment-specific values outside version control where appropriate.
-- Verify authentication and authorization in the relevant controllers and security configuration before exposing services publicly.
-- The configured local URLs and ports are for development, not a production deployment.
-
-## Future Improvements
-
-Possible future improvements include:
-
-- Automated unit and integration tests
-- Improved resume parsing for different formats and headings
-- Resume-to-job matching with a transparent match score and missing-skill analysis
-- Authentication and authorization verification across all routes
-- Containerized deployment and CI/CD
-- Production configuration, logging, monitoring, and API documentation
-
-These are potential improvements, not claims that every item is already implemented.
+- [x] Consolidated Spring Boot artifact builds and starts on Railway.
+- [x] Backend connects to Railway MySQL at startup.
+- [x] Railway health endpoint is configured.
+- [ ] Manually smoke-test each frontend workflow against the deployed API.
+- [ ] Add automated unit and integration tests.
+- [ ] Verify authentication/authorization and upload/download behavior in the deployed environment.
+- [ ] Remove or rotate any previously committed credentials in the original microservice configuration.
 
 ## Author
 
-**Harsh Saroha**
+**Harsh Saroha** — Java Backend Engineer aspirant
 
-Java Backend Engineer aspirant
+- GitHub: https://github.com/Harshsaroha0
+- Portfolio: https://harshsaroha0.github.io
 
-- GitHub: [Harshsaroha0](https://github.com/Harshsaroha0)
-- Portfolio: [harshsaroha0.github.io](https://harshsaroha0.github.io)
-
----
-
-Built as a full-stack Java backend project to practice microservices, REST API design, service discovery, centralized configuration, database integration, and frontend-to-backend integration.
+Built to practice Java backend development, REST APIs, Spring Boot, JPA, MySQL, microservice design, and deployment.
